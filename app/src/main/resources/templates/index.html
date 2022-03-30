@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<p>WellCome <a href="/greeting">here</a></p>
+<div th:text="${title}"></div>
+<form th:action="@{/add}" th:object="${employee}" method="post">
+    <table>
+        <tr>
+            <td>Id</td>
+            <td><input th:field="*{id}" /></td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td><input th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Addess</td>
+            <td><textarea th:field="*{address}" /></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><input th:field="*{email}" /></td>
+        </tr>
+        <tr>
+            <td>Gender</td>
+            <td>
+                <input type="radio" th:field="*{gender}" th:value="male" />
+                <label th:text="male" />
+                <input type="radio" th:field="*{gender}" th:value="female" />
+                <label th:text="female" />
+            </td>
+        </tr>
+        <tr>
+            <td>Favorite</td>
+            <td>
+                <ul style="list-style-type: none;">
+                    <li th:each="fa : ${listFavorite}">
+                        <input type="checkbox"
+                               th:field="*{favorites}"
+                               th:value="${fa}" />
+                        <label th:text="${fa}"></label>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>Position</td>
+            <td>
+                <select th:field="*{position}">
+                    <option value=""></option>
+                    <option th:each="ps : ${listPosition}"
+                            th:value="${ps}" th:text="${ps}"></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" value="Submit" /></td>
+        </tr>
+    </table>
+</form>
+<button onclick="btnClick()" th:text="GET"></button>
+<button onclick="btnClickAjax()" th:text="PROMISE"></button>
+<span id="getContent"></span>
+</body>
+<script>
+    function btnClick(){
+        console.log("btnClick")
+        axios.get('https://dev.to/brunodrugowick/spring-boot-vue-js-axios-and-thymeleaf-with-bootstrap-in-4-commits-2b0l').then(
+            (res)=>{
+                $("#getContent").text(res.toString());
+            }
+        )
+    }
+    function btnClickAjax(){
+        console.log("btnClickAjax")
+        getApi().then(
+            (data)=>{
+                console.log(data)
+            }
+        ).catch((error)=>{
+            console.log(error);
+        })
+
+    }
+    function getApi(){
+        return new Promise((resolve, reject) => {
+            $.get("http://localhost:8081/", function(data, status){
+                return resolve(data);
+            });
+        })
+    }
+    function first(callback){
+        setTimeout(()=>{
+            console.log("Một");
+            callback();
+        },5000);
+
+
+    }
+    function second(){
+        console.log("Hai");
+    }
+    first(()=>{
+        second();
+    });
+
+
+</script>
+</html>
